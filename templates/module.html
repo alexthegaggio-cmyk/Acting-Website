@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}{{ module.title }} — Module {{ module_number }}{% endblock %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/recorder.js') }}?v=2.1" defer></script>
+{% endblock %}
+
+{% block content %}
+
+<main data-module="{{ module_number }}" data-monologues="{{ scripts|tojson|forceescape }}">
+  <!-- MODULE HEADER BAR -->
+  <div class="module-bar">
+    <a href="{{ url_for('dashboard.dashboard_route') }}" class="module-bar-back">← BACK TO DASHBOARD</a>
+    <div class="module-bar-title">Module {{ module_number }} — {{ module.title }}</div>
+    <div class="module-bar-meta">StageReady / Level {{ module_number }}</div>
+  </div>
+
+  <div class="module-wrapper">
+    <!-- SECTION 1 — VIDEO PLAYER -->
+    <div class="video-container" id="module-video-container">
+      <video class="module-video" src="{{ url_for('static', filename='videos/Module_' ~ module_number ~ '.mov') }}" controls style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"></video>
+    </div>
+
+    <!-- SECTION 2 — LECTURE NOTES -->
+    <section class="module-content-section card" id="notes-section">
+      <div class="notes-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        <span class="notes-label">LECTURE NOTES</span>
+      </div>
+      <textarea class="notes-textarea"
+        placeholder="Type your observations and notes here...">{{ module.notes or '' }}</textarea>
+      <div class="save-row">
+        <span id="save-indicator">SAVED ✓</span>
+        <button class="btn-primary btn-sm" id="save-notes-btn">SAVE NOTES</button>
+      </div>
+    </section>
+
+    <!-- SECTION 3 — MODULE QUIZ -->
+    <section class="module-content-section card" id="quiz-section">
+      <div class="quiz-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <h3>Module Quiz</h3>
+        <p>Complete the quiz to unlock the next module. Notes will be hidden during the session.</p>
+      </div>
+
+      {% if module.quiz_passed %}
+      <div class="quiz-pass-state">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <div class="quiz-pass-label">QUIZ PASSED — {{ module.quiz_score }}%</div>
+        <span class="quiz-rule-gold"></span>
+        <form method="POST" action="{{ url_for('modules.quiz_route', n=module_number) }}" style="margin-top: 20px;">
+          <button type="submit" class="btn-secondary btn-sm" style="font-size:10px; padding: 10px 20px;">RESTART
+            QUIZ</button>
+        </form>
+      </div>
+      {% else %}
+      <div style="text-align: center;">
+        <button class="btn-secondary" id="open-quiz-btn">OPEN QUIZ PORTAL</button>
+      </div>
+
+      <form id="quiz-form" style="display:none" action="{{ url_for('modules.quiz_route', n=module_number) }}"
+        method="POST">
+        {% if quiz_questions %}
+        {% for i in range(quiz_questions|length) %}
+        {% set q = quiz_questions[i] %}
+        <div class="question-block">
+          <div class="question-label">QUESTION {{ i + 1 }}</div>
+          <div class="question-text">{{ q.question }}</div>
+          <div class="options-list">
+            {% for j in range(q.options|length) %}
+            <label class="option-wrapper" for="q{{ i }}_{{ j }}">
+              <input type="radio" name="q{{ i }}" value="{{ j }}" id="q{{ i }}_{{ j }}"
+                style="width:18px;height:18px;accent-color:#2E2E2E;flex-shrink:0">
+              <span style="font-family:'DM Mono'; font-size:13px;">{{ q.options[j] }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:32px;">SUBMIT QUIZ</button>
+      </form>
+
+      <div class="quiz-fail-panel" id="quiz-fail" style="display:none">
+        <div class="fail-label">NOT PASSED — <span id="fail-score"></span>%</div>
+        <p style="font-family:'DM Mono'; font-size:12px; color:var(--muted); margin-top:6px;">You need 95% to proceed.
+          Review your notes and try again.</p>
+        <button class="btn-secondary btn-sm" id="retry-btn" style="margin-top:12px;">TRY AGAIN</button>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- SECTION 4 — PERFORMANCE SUBMISSION -->
+    {% if module_number > 1 %}
+    <section class="module-content-section card">
+
+      {% if module_number in [2, 3, 4, 5] %}
+      <!-- SCRIPT GENERATOR -->
+      <div class="monologue-generator"
+        style="margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 32px;">
+        <div class="submission-header" style="margin-bottom: 20px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <h3 style="font-family:'Cormorant Garamond'; font-size:22px; margin-left:12px;">Script & Scene Library</h3>
+        </div>
+
+        <div id="monologue-display" class="monologue-paper" style="display:none;">
+          <h4 id="monologue-title"></h4>
+          <p id="monologue-text"></p>
+
+          <div id="emotion-container"
+            style="display:none; margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--stone);">
+            <div style="display:flex; gap: 16px; align-items: center; justify-content: space-between;">
+              <div style="flex:1; text-align:center;">
+                <span class="ui-label" style="display:block; margin-bottom:8px; color:var(--muted)">ACT AS:</span>
+                <span id="emotion-1" style="font-weight:600; color:var(--error);"></span>
+              </div>
+              <div style="font-family:'Cormorant Garamond'; font-style:italic; color:var(--muted);">vs</div>
+              <div style="flex:1; text-align:center;">
+                <span class="ui-label" style="display:block; margin-bottom:8px; color:var(--muted)">ACT AS:</span>
+                <span id="emotion-2" style="font-weight:600; color:var(--gold);"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-secondary" id="generate-monologue-btn" style="width:100%; letter-spacing:0.1em;">GET NEW
+          SCRIPT</button>
+      </div>
+      {% endif %}
+
+      <div class="submission-header" style="margin-bottom: 24px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+        <h3 style="font-family:'Cormorant Garamond'; font-size:22px; margin-left:12px;">Submit Performance</h3>
+      </div>
+
+      <form id="submission-form" method="POST" enctype="multipart/form-data"
+        action="{{ url_for('modules.submit_route', n=module_number) }}">
+        {% if module_number == 5 %}
+        <div style="margin-bottom: 24px;">
+          <label class="notes-label">AUDITION TITLE</label>
+          <input type="text" name="scene_title" class="input-base" style="width:100%" required
+            placeholder="e.g. Hamlet - Act 3, Scene 1">
+        </div>
+        {% endif %}
+
+        <div class="record-panel" id="record-panel">
+          <div class="record-dot" id="record-dot"></div>
+          <div class="record-text">
+            <p id="record-label">RECORD IN BROWSER</p>
+            <span>Press to start live capture. Live performance required.</span>
+          </div>
+        </div>
+
+
+        <div id="video-preview" style="display:none; margin-top:24px;">
+          <p class="notes-label" style="margin-bottom:12px;">PREVIEW</p>
+          <video id="preview-video" controls
+            style="width:100%; border-radius:4px; border:1px solid var(--border);"></video>
+        </div>
+
+        <button type="submit" class="btn-primary"
+          style="width:100%; margin-top:32px; height:50px; font-size:14px; letter-spacing:0.1em;">SUBMIT
+          PERFORMANCE</button>
+      </form>
+
+    </section>
+    {% endif %}
+  </div>
+</main>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const mainEl = document.querySelector('main[data-monologues]');
+    if (mainEl) {
+      window.MODULE_MONOLOGUES = JSON.parse(mainEl.dataset.monologues || '[]');
+    }
+  })();
+</script>
+{% endblock %}

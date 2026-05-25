@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}Certificate of Achievement — StageReady{% endblock %}
+
+{% block head %}
+<!-- Client-side library that converts the HTML certificate into a downloadable PDF. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+{% endblock %}
+
+{% block content %}
+{% if not unlocked %}
+<div class="completion-header" style="text-align: center; padding-top: 120px;">
+    <span class="completion-label" style="color: var(--error);">ACCESS RESTRICTED</span>
+    <h1>Certification Locked</h1>
+    <p class="completion-subtitle">You must complete all 5 curriculum modules to unlock your professional certificate.
+    </p>
+    <div style="margin-top: 32px;">
+        <a href="{{ url_for('dashboard.dashboard_route') }}" class="btn-primary">RETURN TO DASHBOARD</a>
+    </div>
+</div>
+{% else %}
+<div class="completion-header">
+    <span class="rule-gold"></span>
+    <span class="completion-label">COURSE COMPLETED</span>
+    <h1>Course Completed</h1>
+    <p class="completion-subtitle">You have successfully mastered the StageReady Foundation Curriculum.</p>
+</div>
+
+<div class="certificate-container">
+    <div class="certificate-outer">
+        <div id="certificate-inner" class="certificate-inner">
+            <!-- StageReady Logo -->
+            <div class="certificate-logo">
+                <svg width="48" height="42" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 2C2 2 5 4 7 10C9 16 6 22 6 22" stroke="var(--gold)" stroke-width="1.5"
+                        stroke-linecap="round" />
+                    <path d="M2 2C2 2 6 3 8 4" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M26 2C26 2 23 4 21 10C19 16 22 22 22 22" stroke="var(--gold)" stroke-width="1.5"
+                        stroke-linecap="round" />
+                    <path d="M26 2C26 2 22 3 20 4" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M8 4C10 5 12 6 14 6C16 6 18 5 20 4" stroke="var(--gold)" stroke-width="1.5"
+                        stroke-linecap="round" />
+                </svg>
+                <div class="cert-wordmark">StageReady</div>
+            </div>
+
+            <h2 class="cert-title">Certificate of Achievement</h2>
+            <p class="cert-certify">This is to certify that</p>
+            <span class="cert-name">{{ first_name }} {{ last_name }}</span>
+            <p class="cert-description">Has successfully completed the intensive StageReady professional acting
+                foundation course, demonstrating proficiency in voice, movement, and character analysis.</p>
+
+            <div class="cert-signatures">
+                <div class="sig-col">
+                    <span
+                        style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: var(--charcoal); margin-bottom: 4px;">Alessandro
+                        Vernetti</span>
+                    <div class="sig-line"></div>
+                    <span class="sig-label">Course Director</span>
+                </div>
+                <div class="sig-col">
+                    <span class="sig-brand" style="margin-bottom: 4px;">StageReady</span>
+                    <div class="sig-line" style="width: 80px;"></div>
+                    <span class="sig-label">Director</span>
+                </div>
+            </div>
+
+            <div class="cert-date">ISSUED MAY 2026</div>
+            <div class="cert-id">STAGEREADY-ACADEMY-{{ first_name[:1] }}{{ last_name[:1] }}-2026-X</div>
+        </div>
+    </div>
+
+    <div class="cert-actions">
+        <button class="btn-primary" id="download-pdf">⬇ DOWNLOAD PDF</button>
+        <button class="btn-secondary" onclick="window.print()">🖨 PRINT CERTIFICATE</button>
+    </div>
+</div>
+
+<div class="embed-section">
+    <span class="section-label">EMBED YOUR ACHIEVEMENT</span>
+    <span class="rule-gold" style="width: 40px; display: block;"></span>
+
+    <div class="dark-panel">
+        <p class="panel-text">Copy this snippet to display your badge on LinkedIn, Portfolio, or Personal Site.</p>
+        <textarea class="embed-code"
+            readonly><div class='stageready-badge'>StageReady Graduate — {{ first_name }} {{ last_name }} — 2026</div></textarea>
+        <div class="panel-actions">
+            <button class="btn-gold" id="copy-btn">COPY CODE</button>
+        </div>
+    </div>
+</div>
+
+<div class="resources-section">
+    <span class="section-label">GRADUATE DEEP DIVES & PAPERS</span>
+    <span class="rule-gold" style="width: 40px; display: block;"></span>
+
+    <div class="resources-grid">
+        <div class="card resource-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <h3>The Brechtian Shift</h3>
+            <p>A professional deep dive into epic theatre: navigating the tension between Brecht, Stanislavski, and
+                modern realism.</p>
+            <a href="#" class="resource-link" onclick="openPaper('brecht'); return false;">READ THE PAPER &rarr;</a>
+        </div>
+        <div class="card resource-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+            <h3>Physics of Resonance</h3>
+            <p>Advanced vocal mechanics: maintaining projection and texture without strain in high-intensity performance
+                spaces.</p>
+            <a href="#" class="resource-link" onclick="openPaper('resonance'); return false;">READ THE PAPER &rarr;</a>
+        </div>
+        <div class="card resource-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            <h3>The Casting Lens</h3>
+            <p>Beyond the monologue: a professional guide to the psychological and technical expectations of the modern
+                audition room.</p>
+            <a href="#" class="resource-link" onclick="openPaper('casting'); return false;">READ THE PAPER &rarr;</a>
+        </div>
+        <div class="card resource-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <h3>Archetype & Selection</h3>
+            <p>A systematic approach to monologue curation: finding the specific literature that resonates with your
+                professional archetype.</p>
+            <a href="#" class="resource-link" onclick="openPaper('archetype'); return false;">READ THE PAPER &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<div class="progress-summary">
+    <span class="summary-label">SUMMARY OF YOUR PROGRESS</span>
+    <p class="summary-text">Course Status: Mastery Achieved &middot; Curriculum: Foundation &middot; Verification:
+        Active</p>
+</div>
+
+<!-- PAPER MODAL -->
+<div class="paper-modal-overlay" id="paper-modal">
+    <div class="paper-modal-content">
+        <button class="modal-close" onclick="closePaper()">[CLOSE ESC]</button>
+        <div id="paper-content-brecht" style="display:none;" class="paper-body">
+            <div class="paper-subtitle">Deep Dive &middot; Module 01</div>
+            <h2 class="paper-title">The Brechtian Shift</h2>
+            <p>For decades, the dominant force in Western actor training has been the psychological realism pioneered by
+                Constantin Stanislavski. His system demands emotional truth, affective memory, and a complete immersion
+                into the character's subconscious. The actor strives to <em>become</em> the character.</p>
+            <h4>The Epic Theatre Response</h4>
+            <p>Enter Bertolt Brecht. Reacting against the hypnotic illusion of realism, Brecht proposed the
+                <em>Verfremdungseffekt</em> (the alienation or distancing effect). He argued that audiences shouldn't
+                lose themselves in a narrative; they should remain critical observers, aware they are watching a play.
+            </p>
+            <p>For the actor, this requires a radical shift in technique. Instead of internalizing the character, the
+                actor <em>demonstrates</em> them. You stand beside the character, presenting their actions and choices
+                to the audience for judgment.</p>
+            <h4>Application in the Modern Space</h4>
+            <p>Today’s working actor must be fluent in both. While film and television heavily favor Stanislavskian
+                realism, contemporary stage work and avant-garde cinema often demand the Brechtian detachment. The truly
+                StageReady actor understands that these are not opposing forces, but rather different tools in the
+                professional kit.</p>
+        </div>
+        <div id="paper-content-resonance" style="display:none;" class="paper-body">
+            <div class="paper-subtitle">Deep Dive &middot; Module 02</div>
+            <h2 class="paper-title">Physics of Resonance</h2>
+            <p>The untrained actor relies on sheer volume to project, pushing air violently through the vocal folds.
+                This results in tension, vocal fatigue, and ultimately, a flat, harsh sound that fails to carry
+                emotional nuance.</p>
+            <h4>The Resonator Network</h4>
+            <p>True vocal power is a matter of acoustics, not force. The human body is equipped with a network of
+                resonating chambers: the chest, the pharynx, the mouth, the nasal cavity, and the sinuses. When the
+                vocal folds vibrate, they produce a fundamental tone. It is the amplification of this tone within these
+                chambers that creates resonance.</p>
+            <p>By learning to relax the jaw, lower the larynx, and lift the soft palate, the actor maximizes the space
+                in the pharyngeal and oral cavities. This allows the sound waves to bounce and multiply, creating a
+                rich, multi-layered frequency that travels effortlessly to the back of a 1,000-seat theater.</p>
+            <h4>Sustainability on Stage</h4>
+            <p>Mastering resonance is the key to vocal sustainability. An actor performing an eight-show week simply
+                cannot rely on shouting. By shifting the labor from the delicate vocal folds to the structural
+                resonating chambers, the voice remains healthy, dynamic, and expressive night after night.</p>
+        </div>
+        <div id="paper-content-casting" style="display:none;" class="paper-body">
+            <div class="paper-subtitle">Deep Dive &middot; Module 03</div>
+            <h2 class="paper-title">The Casting Lens</h2>
+            <p>The audition room is often perceived as an artistic crucible, but in reality, it is a high-pressure
+                business environment. Understanding the psychological geometry of the room is just as critical as the
+                monologue you've prepared.</p>
+            <h4>The Technical Expectation</h4>
+            <p>Casting directors and producers are looking to solve a problem: they need to fill a specific role with an
+                actor who is reliable, directable, and compelling. When you walk into the room, you are immediately
+                assessed on your technical proficiency.</p>
+            <p>Can you find your light? Do you understand the framing of the camera? If given a redirect, can you
+                incorporate it immediately without sacrificing your foundational choices? These are the silent tests
+                happening before you speak your first line.</p>
+            <h4>Owning the Space</h4>
+            <p>The StageReady approach demands that you enter not as an applicant begging for a job, but as a
+                collaborator offering a solution. You own the space the moment you cross the threshold. Your slate must
+                be grounded, your eyeline decisive, and your transition into the material seamless. You leave the
+                desperation outside; inside, you are simply a professional doing your work.</p>
+        </div>
+        <div id="paper-content-archetype" style="display:none;" class="paper-body">
+            <div class="paper-subtitle">Deep Dive &middot; Module 04</div>
+            <h2 class="paper-title">Archetype & Selection</h2>
+            <p>Selecting a monologue is not about finding writing that you like; it is about finding writing that serves
+                as a high-precision vehicle for your specific casting archetype.</p>
+            <h4>Defining the Archetype</h4>
+            <p>Every actor possesses a unique set of inherent qualities—physicality, vocal timbre, resting energy. In
+                the professional industry, these qualities dictate the types of roles you will initially be called in
+                for. Are you the intellectual antagonist, the weary detective, the volatile artist, or the grounded
+                confidant?</p>
+            <p>Acknowledging your archetype is not limiting; it is empowering. It allows you to target your material
+                with sniper-like precision.</p>
+            <h4>The One-Minute Narrative</h4>
+            <p>A successful monologue must do three things within sixty seconds: establish a clear objective,
+                demonstrate a dynamic shift in tactic, and highlight the core traits of your archetype. Avoid pieces
+                that are entirely retrospective or emotionally stagnant. You need active, driving text where your
+                character is fighting for something right now. When the material aligns perfectly with your archetype,
+                the performance feels inevitable.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // PDF Generation
+    document.getElementById('download-pdf')?.addEventListener('click', () => {
+        const element = document.getElementById('certificate-inner');
+        const opt = {
+            margin: 0,
+            filename: 'StageReady-Certificate.pdf',
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 3, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+        html2pdf().set(opt).from(element).save();
+    });
+
+    // Copy Code logic
+    document.getElementById('copy-btn')?.addEventListener('click', () => {
+        const text = document.querySelector('.embed-code').value;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copy-btn');
+            btn.textContent = 'COPIED ✓';
+            setTimeout(() => btn.textContent = 'COPY CODE', 2000);
+        });
+    });
+
+    // Modal Logic
+    const modal = document.getElementById('paper-modal');
+    const paperIds = ['brecht', 'resonance', 'casting', 'archetype'];
+
+    function openPaper(id) {
+        paperIds.forEach(pid => {
+            document.getElementById('paper-content-' + pid).style.display = (pid === id) ? 'block' : 'none';
+        });
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePaper() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closePaper();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closePaper();
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

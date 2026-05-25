@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — StageReady{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+  <header class="dashboard-header">
+    <span class="rule-gold"></span>
+    {% if user and user.last_name %}
+    <h1>Welcome back, Mr. {{ user.last_name }}.</h1>
+    {% else %}
+    <h1>Welcome back.</h1>
+    {% endif %}
+    <p class="dashboard-subline">Pick up right where you left off in your acting journey.</p>
+  </header>
+
+  {% set ns = namespace(completed_count=0) %}
+  {% for m in progress %}
+  {% if m.status == 'completed' %}
+  {% set ns.completed_count = ns.completed_count + 1 %}
+  {% endif %}
+  {% endfor %}
+  {% set total_modules = 5 %}
+  {% set progress_percent = (ns.completed_count / total_modules * 100)|int %}
+
+  <div class="progress-card card">
+    <div class="progress-card-top">
+      <span class="progress-label">Overall Course Progress</span>
+      <span class="progress-count">{{ ns.completed_count }} of {{ total_modules }} Modules Completed</span>
+    </div>
+    <div class="progress-percent">{{ progress_percent }}%</div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" style="--progress: {{ progress_percent }}%; width: var(--progress);"></div>
+    </div>
+  </div>
+
+  <div class="tracker-wrap">
+    <div class="tracker-row">
+      {% for module in progress %}
+      <div class="step step-{{ module.status }}">
+        {% if module.status == 'completed' %}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cream)" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        {% else %}
+        <span>{{ module.module_number }}</span>
+        {% endif %}
+      </div>
+      {% if not loop.last %}
+      <div class="step-line{% if module.status != 'completed' %}-dashed{% endif %}"></div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <div class="tracker-labels">
+      {% set labels = ['Basics', 'Memory', 'Improv', 'Emotion', 'Audition'] %}
+      {% for module in progress %}
+      {% if loop.index0 < labels|length %} <span class="tracker-label tracker-label--{{ module.status }}">{{
+        labels[loop.index0] }}</span>
+        {% endif %}
+        {% endfor %}
+    </div>
+  </div>
+
+  <div class="modules-section">
+    <h2>Learning Modules</h2>
+    <span class="rule-gold rule-gold--modules"></span>
+
+    <div class="modules-list">
+      {% for module in progress %}
+      {% set is_locked = module.status == 'locked' %}
+      <a href="{{ url_for('modules.module_route', n=module.module_number) if not is_locked else '#' }}"
+        class="module-row module-row--{{ module.status }}" {% if is_locked %}onclick="return false;"
+        aria-disabled="true" role="link" {% endif %}>
+
+        <div class="module-icon">
+          {% if module.module_number == 1 %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 22v-5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v5"></path>
+            <path d="M2 8V5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v3"></path>
+            <path d="M12 3v12"></path>
+            <path d="M2 15h20"></path>
+          </svg>
+          {% elif module.module_number == 2 %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          {% elif module.module_number == 3 %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          {% elif module.module_number == 4 %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+            </path>
+          </svg>
+          {% else %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          {% endif %}
+        </div>
+
+        <div class="module-info">
+          <h3 class="module-title">{{ module.title }}</h3>
+          <p class="module-subtitle">{{ module.subtitle }}</p>
+        </div>
+
+        <div class="module-mini-bar">
+          <div class="module-mini-fill" style="--score: {{ module.quiz_score or 0 }}%; width: var(--score);"></div>
+        </div>
+
+        <div class="module-status status--{{ module.status }}">
+          {% if module.status == 'completed' %}
+          COMPLETED
+          {% elif module.status == 'current' %}
+          IN PROGRESS
+          {% else %}
+          LOCKED
+          {% endif %}
+        </div>
+
+        <div class="module-cta">
+          {% if module.status == 'completed' %}
+          <span class="btn-secondary btn-sm">REVIEW</span>
+          {% elif module.status == 'current' %}
+          <span class="btn-primary btn-sm">CONTINUE</span>
+          {% else %}
+          <span class="btn-locked btn-sm">LOCKED</span>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% set all_completed = ns.completed_count == total_modules %}
+    <div class="certificate-gateway">
+      <div
+        class="module-row certificate-row {{ 'certificate-row--unlocked' if all_completed else 'module-row--locked' }}">
+
+        <div class="module-icon {{ 'certificate-icon--unlocked' if all_completed else 'certificate-icon--locked' }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="7"></circle>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+          </svg>
+        </div>
+
+        <div class="module-info">
+          <h3 class="module-title module-title--italic">Professional Certification</h3>
+          <p class="module-subtitle">Unlocked upon mastery of all 5 curriculum modules.</p>
+        </div>
+
+        <div class="module-status status--{{ 'completed' if all_completed else 'locked' }}">
+          {{ 'AVAILABLE' if all_completed else 'LOCKED' }}
+        </div>
+
+        <div class="module-cta">
+          {% if all_completed %}
+          <a href="{{ url_for('certificate.certificate_route') }}" class="btn-primary btn-sm">VIEW CERTIFICATE</a>
+          {% else %}
+          <span class="btn-locked btn-sm">LOCKED</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}StageReady — Master the Craft of Performance{% endblock %}
+
+{% block content %}
+<div class="index-wrapper">
+  <section class="hero">
+    <div class="hero-content">
+      <span class="rule-gold"></span>
+      <span class="ui-label hero-label">Acting Foundation Course</span>
+      <h1>Master the Craft<br>of Performance</h1>
+      <p class="hero-description">A structured and professional acting curriculum designed to take you from the basics
+        to audition-ready in five modules.</p>
+
+      <div class="hero-cta">
+        <a href="{{ url_for('auth.register_route') }}" class="btn-primary">Start Learning</a>
+        <a href="#roadmap" class="btn-secondary" data-scroll="roadmap">View Syllabus</a>
+      </div>
+
+      <span class="hero-values">DISCIPLINED · WARM · CONFIDENT · AMBITIOUS</span>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-image-wrap">
+        <img src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=1200"
+          alt="Theatre Stage" class="hero-img">
+        <div class="grain-overlay"></div>
+        <div class="hero-bleed"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-acting">
+    <div class="container">
+      <div class="why-header centered">
+        <span class="rule-gold centered"></span>
+        <h2>Why Learn Acting?</h2>
+      </div>
+
+      <div class="why-features-grid">
+        <div class="feature">
+          <div class="feature-icon-wrap">
+            <svg class="feature-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h3>Empathy & Connection</h3>
+            <p>Develop a deep understanding of human psychology and the hidden motivations that drive us all.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon-wrap">
+            <svg class="feature-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h3>Commanding Presence</h3>
+            <p>Master your vocal projection and body language to hold any audience's attention with confidence.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon-wrap">
+            <svg class="feature-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h3>Creative Discipline</h3>
+            <p>Learn the focus required for memorization and the persistence needed to refine a professional
+              performance.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-icon-wrap">
+            <svg class="feature-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="feature-text">
+            <h3>True Authenticity</h3>
+            <p>Break through personal barriers to access your true emotional range and show it with courage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="roadmap" id="roadmap">
+    <div class="container">
+      <div class="why-manifesto">
+        <blockquote>"Acting is the ability to live truthfully under imaginary circumstances."</blockquote>
+        <cite>— Sanford Meisner</cite>
+      </div>
+
+      <div class="why-header centered" style="margin-top: 120px;">
+        <span class="rule-gold centered"></span>
+        <h2 class="text-cream">Course Roadmap</h2>
+        <p class="text-stone">Our 5-module journey to professional readiness.</p>
+      </div>
+
+      <div class="roadmap-path">
+        <div class="roadmap-spine"></div>
+
+        <div class="roadmap-node node-odd">
+          <div class="node-content">
+            <h3 class="text-cream">Basics of Acting</h3>
+            <p class="text-stone">Foundational techniques and terminology</p>
+          </div>
+          <div class="node-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 22v-5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v5" />
+              <path d="M2 8V5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v3" />
+              <path d="M12 3v12" />
+              <path d="M2 15h20" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="roadmap-node node-even">
+          <div class="node-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </div>
+          <div class="node-content">
+            <h3 class="text-cream">Memorization</h3>
+            <p class="text-stone">Script mastery and recall techniques</p>
+          </div>
+        </div>
+
+        <div class="roadmap-node node-odd">
+          <div class="node-content">
+            <h3 class="text-cream">Improvisation</h3>
+            <p class="text-stone">Creative freedom and spontaneity</p>
+          </div>
+          <div class="node-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="roadmap-node node-even">
+          <div class="node-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+          </div>
+          <div class="node-content">
+            <h3 class="text-cream">Authenticity</h3>
+            <p class="text-stone">Finding truth in every performance</p>
+          </div>
+        </div>
+
+        <div class="roadmap-node node-odd">
+          <div class="node-content">
+            <h3 class="text-cream">Auditioning</h3>
+            <p class="text-stone">Professional callbacks and cold reads</p>
+          </div>
+          <div class="node-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
